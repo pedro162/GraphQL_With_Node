@@ -46,12 +46,34 @@ app.post('/api/users', (request, rest)=>{
     const {nome, email, ativo} = request.body;
 
     rest.json(
-        { message: `Recebi os dados: Nome = ${nome}, Email = ${email}, Ativo = ${ativo}` }
+        { ...request.body }
+    )
+})
+
+app.put('/api/users/:id', (request, rest)=>{
+    const user = arrayUsers.find((item)=>item?.id == request.params.id)
+
+    rest.json(
+        { ...user,...request.body }
+    )
+})
+
+app.delete('/api/users/:id', (request, rest)=>{
+    const user = arrayUsers.find((item)=>item?.id == request.params.id)
+
+    rest.json(
+        {}
     )
 })
 
 app.get('/api/rules', (request, rest)=>{
-    rest.json(arrayrules)
+    let result = arrayRules;
+
+    if(request.query?.type){
+        result = result.filter((item, index, arr)=>item.type == request.query?.type)
+    }
+
+    rest.json(result)
 })
 
 app.get('/api/rules/:id', (request, rest)=>{
@@ -68,4 +90,12 @@ app.post('/api/rules', (request, rest)=>{
 
 app.listen(port, ()=>{
     console.log(`Servidor rodando em http://localhost:${port}`);
+})
+
+app.post('/api/rules', (request, rest)=>{
+    const {type, ativo} = request.body;
+
+    rest.json(
+        { message: `Recebi os dados: Type = ${type}, Ativo = ${ativo}` }
+    )
 })
